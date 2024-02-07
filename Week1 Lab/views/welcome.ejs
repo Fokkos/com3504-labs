@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+<h1><%= title %></h1>
+<p>This is the welcome page for the module</p>
+<% if (login === true){ %>
+    <% if (name != "") { %>
+        <script>
+            function incorrectLoginAlert() {
+                alert("Invalid username or password. Please try again.");
+            }
+            document.addEventListener("DOMContentLoaded", function() {
+                incorrectLoginAlert();
+            });
+        </script>
+    <% } %>
+    <p>Please login</p>
+    <form action="welcome" method="POST">
+        <input type="text" name="username" placeholder="username"><br>
+        <input type="password" name="password" placeholder="password"><br>
+        <input type="submit" value="Login">
+    </form>
+<% }else{ %>
+    <p>Welcome, <%= name %></p>
+<% } %>
+</body>
+</html>
