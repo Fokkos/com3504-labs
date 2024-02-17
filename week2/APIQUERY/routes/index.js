@@ -61,22 +61,18 @@ router.get ('/upload_data', function(req, res, next) {
 });
 
 router.get('/reddit', async function(req, res, next) {
-    fetch('https://www.reddit.com/r/unitedkingdom/top.json?limit=10&t=year')
+    let url = 'https://www.reddit.com/r/unitedkingdom/top.json?limit=10&t=year';
+    fetch(url)
         .then(res => res.json())
-        .then(json => console.log(json))
+        .then((json) => {
+            let posts = json.data.children;
+            console.log(posts)
+            res.render('reddit', { posts: posts })
+        })
         .catch((error) => {
             console.error('Error fetching Reddit data:', error);
             res.status(500).send('Error fetching Reddit data');
         });
-    try {
-        let response = await fetch('https://www.reddit.com/r/unitedkingdom/top.json?limit=10&t=year');
-        response = await response.json();
-        res.status(200).json(response);
-        res.render('reddit', { title: "REDDIT", data: response.data });
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({msg: `Internal Server Error.`});
-    }
 });
 
 

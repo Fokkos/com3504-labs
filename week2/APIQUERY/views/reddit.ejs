@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
 </head>
 <body>
-<h1><%= title %></h1>
 <table>
-    <% data.children.forEach((i) => { %>
+    <% posts.forEach((post) => { %>
         <tr>
-            <td><img src="<%= i.data.thumbnail; %>"></td>
-            <td><a href="https://reddit.com<%= i.data.permalink; %>">reddit.com<%= i.data.permalink; %></a></td>
+            <!-- post image -->
+            <td><img src="<%= post.data.thumbnail; %>"/></td>
+            <!-- post link + title -->
+            <td><a href="<%= post.data.url; %>"><%= post.data.title; %></a></td>
         </tr>
     <% }); %>
 </table>
