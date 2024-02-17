@@ -66,7 +66,6 @@ router.get('/reddit', async function(req, res, next) {
         .then(res => res.json())
         .then((json) => {
             let posts = json.data.children;
-            console.log(posts)
             res.render('reddit', { posts: posts })
         })
         .catch((error) => {
