@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  </head>
+  <body>
+    <h1 id="Welcome"></h1>
+    <form id="room_form" action="">
+      <input id="room_id" autocomplete="off" placeholder="room id"/><br>
+      <input id="username" autocomplete="off" placeholder="username"/><br>
+      <button>Join</button>
+    </form>
+    <p id="status"></p>
+    <ul id="messages"></ul>
+    <form id="form" action="">
+      <input id="input" autocomplete="off" /><button>Send</button>
+    </form>
+    <script>
+      //creates an instance using the library declared in the header
+      var socket = io();
+      var room_form = document.getElementById('room_form');
+      var room_id = document.getElementById('room_id');
+      var username = document.getElementById('username');
+      var form = document.getElementById('form');
+      var input = document.getElementById('input');
+
+     //listen to the event welcome we created in bin/www and displays it in the welcome <h1> tag using GetElementById
+      socket.on('welcome',function(data){
+        document.getElementById('Welcome').innerHTML = data.description;
+
+      });
+
+      //listen to the event n_clients we created in bin/www and displays it in the <p> tag with id status using GetElementById
+      socket.on('n_clients',function(data){
+        document.getElementById('status').innerHTML = data.description;
+
+      });
+      //listens to the form submit button - when that is pressed prevents the default value (sending to value of action attribute) and if there is a value in the input field it emits that value using an event called 'chat message'
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (input.value) {
+          socket.emit('chat message', input.value);
+          socket.emit('chat message', username.value + ' in room: ' + room_id.value);
+          socket.emit('chat message', "test test test")
+          input.value = '';
+        }
+        console.log(room_id.value);
+        console.log(username.value);
+      });
+
+      room_form.addEventListener('submit', function(e) {
+        console.log("room_id: " + room_id.value);
+        console.log("username: " + username.value);
+        e.preventDefault();
+        if (room_id.value && username.value) {
+          connectToRoom(room_id.value, username.value);
+          input.value = '';
+        }
+      });
+
+      //display the chat message sent as a list item by creating a new <li> element, appending the child and scrolling the window
+      socket.on('chat message', function(msg) {
+        var item = document.createElement('li');
+        item.textContent = msg;
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+
+      function connectToRoom(roomNo, name) {
+        socket.emit('create or join', roomNo, name);
+      }
+
+    </script>
+  </body>
+</html>
